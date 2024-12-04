@@ -1,18 +1,24 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import XSvg from "../../../components/svgs/X";
+// import { ToastContainer, toast } from 'react-toastify';
+//   import 'react-toastify/dist/ReactToastify.css';
 
 import { MdOutlineMail } from "react-icons/md";
 import { MdPassword } from "react-icons/md";
-
+import toast from "react-hot-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const LoginPage = () => {
+	    const notify = () => toast("Otp Verified ");
+
 	const [formData, setFormData] = useState({
 		username: "",
 		password: "",
 	});
+	const navigate = useNavigate();
 	const queryClient = useQueryClient();
 
 	const {
@@ -32,9 +38,18 @@ const LoginPage = () => {
 				});
 
 				const data = await res.json();
-
+                
 				if (!res.ok) {
 					throw new Error(data.error || "Something went wrong");
+				}
+				if(res.status == 400) {
+					alert(data.error);
+				}
+				if(res.status == 200) {
+					// alert('login Successfully!!');
+					toast.success( "login  successfully");
+
+                    navigate('/')
 				}
 			} catch (error) {
 				throw new Error(error);
@@ -95,7 +110,9 @@ const LoginPage = () => {
 				<div className='flex flex-col gap-2 mt-4'>
 					<p className='text-white text-lg'>{"Don't"} have an account?</p>
 					<Link to='/signup'>
-						<button className='btn rounded-full btn-primary text-white btn-outline w-full'>Sign up</button>
+						<div>
+						<button className='btn rounded-full btn-primary text-white btn-outline w-full' onClick={notify}>Sign up</button>
+						</div>
 					</Link>
 				</div>
 			</div>
